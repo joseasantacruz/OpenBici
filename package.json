@@ -21,5 +21,11 @@
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard"
   ],
-  "cordovaPlatforms": []
+  "cordovaPlatforms": [
+    "ios",
+    {
+      "platform": "android",
+      "locator": "windows"
+    }
+  ]
 }
