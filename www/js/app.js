@@ -49,7 +49,17 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         templateUrl: 'templates/caminos.html'
       }
     }
-  });
+  })
+  
+  .state('app.visualizacionComunidades', {
+      url: '/visualizacionComunidades',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/visualizacionComunidades.html' 
+        }
+      }
+    })
+	;
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/comunidades');
 });
