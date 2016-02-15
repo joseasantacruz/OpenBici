@@ -12,23 +12,32 @@
     <ion-nav-view name="menuContent"></ion-nav-view>
   </ion-side-menu-content>
 
-  <ion-side-menu side="left">
+ 
+  
+   <ion-side-menu side="left">
     <ion-header-bar class="bar-stable">
-      <h1 class="title">Menu</h1>
+      <h2 style="color: black  ;font-size: 160%; text-align : center;background-color: transparent;">Menu</h2>
     </ion-header-bar>
-    <ion-content>
-      <ion-list>
-		<ion-item menu-close href="#/app/comunidades">
-          Comunidades
-        </ion-item>
-        <ion-item menu-close href="#/app/caminos">
-          Caminos
-        </ion-item> 
-		<ion-item menu-close href="#/app/visualizacionComunidades">
-          Visualizacion Comunidades
-        </ion-item> 
-        
-      </ion-list>
+    <ion-content  >
+      <div class="list">
+
+      <a id="menu1" class="item item-icon-left menu-close {{ getClass('comunidades') }}" href="#/app/comunidades"> 
+        <i class="icon ion-ios-people"></i>
+		<p class="menu-item-text"> Comunidades</p>
+      </a>
+
+      <a id="menu2" class="item item-icon-left menu-close {{ getClass('caminos') }}" href="#/app/caminos">
+        <i class="icon ion-android-bicycle"></i>
+        <p class="menu-item-text">Caminos</p>
+      </a>
+
+      <a id="menu3" class="item item-icon-left menu-close {{ getClass('visualizacionComunidades') }}" href="#/app/visualizacionComunidades">
+        <i class="icon ion-social-buffer"></i>
+        <p class="menu-item-text"> Visualizacion Comunidades</p>
+      </a> 
+	 
+
+  </div >
     </ion-content>
   </ion-side-menu>
 </ion-side-menus>

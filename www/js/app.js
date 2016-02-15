@@ -29,7 +29,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     url: '/app',
     abstract: true,
     templateUrl: 'templates/menu.html',
-    controller: 'AppCtrl'
+			controller: 'MenuCtrl'
   })
 
  
@@ -37,7 +37,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       url: '/comunidades',
       views: {
         'menuContent': {
-          templateUrl: 'templates/comunidades.html' 
+          templateUrl: 'templates/comunidades.html' ,
+			controller: 'ComunidadesCtrl'
         }
       }
     })
@@ -46,7 +47,8 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     url: '/caminos',
     views: {
       'menuContent': {
-        templateUrl: 'templates/caminos.html'
+        templateUrl: 'templates/caminos.html',
+			controller: 'caminosCtrl'
       }
     }
   })
@@ -55,10 +57,21 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       url: '/visualizacionComunidades',
       views: {
         'menuContent': {
-          templateUrl: 'templates/visualizacionComunidades.html' 
+          templateUrl: 'templates/visualizacionComunidades.html',
+			controller: 'visualizacionCtrl'
+
         }
       }
     })
+	/*.state('app.caminosbicis', {
+		url: '/caminosbicis',
+		views: {
+		  'menuContent': {
+			templateUrl: 'templates/caminosBicis.html'
+		  }
+		}
+	  })*/
+	
 	;
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/comunidades');

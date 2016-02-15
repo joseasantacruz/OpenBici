@@ -8,7 +8,7 @@ angular.module('starter.controllers', [])
   // listen for the $ionicView.enter event:
   //$scope.$on('$ionicView.enter', function(e) {
   //});
-
+	
   // Form data for the login modal
   $scope.loginData = {};
 
@@ -41,11 +41,108 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('ComunidadesCtrl', function( ) {
-      google.charts.load('current', {
+.controller('MenuCtrl', function($scope, $state) {
+
+  $scope.getClass = function(nombre) {
+    // Si esta en este estado.
+    if ($state.current.name.indexOf(nombre) !== -1) return 'menu-selected';
+    else return '';
+  };
+  
+  
+})
+
+.controller('visualizacionCtrl',  function($window) {
+	//console.log("Voy a dibujar mapa");
+	dibujarElMapa($window.innerWidth, $window.innerHeight);
+})
+.controller('ComunidadesCtrl', function($scope,ComunidadesService, Initializer,$window) {
+		if ($window.cordova) {
+			cordova.plugins.diagnostic.isLocationEnabled(
+			function(e) {
+				if (e){
+				  successFunctionCall();
+				}   
+				else {
+				  alert("Location Not Turned ON");
+				  cordova.plugins.diagnostic.switchToLocationSettings();
+				}
+			},
+			function(e) {
+				alert('Error ' + e);
+			}
+            );
+        };
+	var map = L.map('map_div') ;
+	var icono  = L.icon({
+		iconUrl: 'http://icons.iconarchive.com/icons/sonya/swarm/64/Bike-icon.png',
+		  
+		popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+	});
+	
+	L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+		maxZoom: 20
+	}).addTo(map);
+	map.locate({ setView: true, maxZoom: 6});
+	function onLocationFound(e) {  
+		L.marker(e.latlng).addTo(map)
+	};
+	map.on('locationfound', onLocationFound); 
+
+	 a1=   L.marker([-25.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:1  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">')  ;
+	 a2=   L.marker([-26.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:2  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">');
+	 
+	/*var a1= new L.marker([-25.308,-57.6], {icon: icono});
+	var	a2= new L.marker([-26.308,-57.6], {icon: icono});
+		map.addLayer(a1 );
+		map.addLayer( a2);
+		a1.bindPopup('<b>Ciudad o Municipio</b>:1  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">').openPopup();
+		a2.bindPopup('<b>Ciudad o Municipio</b>:2  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">').openPopup();
+	*/
+	map.on('click', onMapClick);
+	function onMapClick(e) { 
+		map.removeLayer(a1);
+		map.removeLayer(a2);
+		
+		a1=   L.marker([-25.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:1  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">')  ;
+	 a2=   L.marker([-26.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:2  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">');
+	};
+	function onLocationError(e) {
+		alert(e.message);
+	}
+	map.on('locationerror', onLocationError);
+	
+	 /*
+	 google.charts.load('current', {
         packages: ['map']
       });
-      google.charts.setOnLoadCallback(drawMap);
+      google.charts.setOnLoadCallback(ComunidadesService.drawMap);
+	  */
+	 
+	/*
+	 var options = {
+          zoomLevel: 6,
+          showTip: true,
+          useMapTypeControl: true,
+          icons: {
+            blue: {
+              normal: url + 'Map-Marker-Ball-Azure-icon.png',
+              selected: url + 'Map-Marker-Ball-Right-Azure-icon.png'
+            },
+            green: {
+              normal: 'http://icons.iconarchive.com/icons/sonya/swarm/64/Bike-icon.png',
+              selected: 'http://icons.iconarchive.com/icons/sonya/swarm/96/Bike-icon.png'
+            },
+            pink: {
+              normal: url + 'Map-Marker-Ball-Pink-icon.png',
+              selected: url + 'Map-Marker-Ball-Right-Pink-icon.png'
+            }
+          }
+        };
+	L.marker([51.5, -0.09], {icon: greenIcon}).addTo(map);
+	
+	  
 
       function drawMap() {
         var data = new google.visualization.DataTable();
@@ -119,5 +216,26 @@ angular.module('starter.controllers', [])
         var map = new google.visualization.Map(document.getElementById('map_div'));
 
         map.draw(data, options);
-      }
+      }*/
+})
+
+.controller('caminosCtrl', function($scope ) {
+
+	var map = L.map('map' ); 
+	L.tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', {
+		ttribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'  ,
+		maxZoom: 18,
+		id: 'your.mapbox.project.id',
+		accessToken: 'your.mapbox.public.access.token'
+	}).addTo(map); 
+	map.locate({ setView: true, maxZoom: 13});
+	function onLocationFound(e) {  
+		L.marker(e.latlng).addTo(map)
+	};
+	map.on('locationfound', onLocationFound);
+	function onLocationError(e) {
+		alert(e.message);
+	}
+	map.on('locationerror', onLocationError);
+  
 })
