@@ -10,6 +10,17 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
+	
+	$ionicPlatform.on("resume", function() {
+      console.log("resume");
+	  alert("resume");
+	  //$state.reload();
+	  //$state.forceReload();
+	  // $state.transitionTo($state.current, $stateParams, { reload: true, inherit: false, notify: true });
+	  //$state.go('app.comunidades', null, {reload: true});
+	   //$state.go('app.comunidades');
+	   $state.go($state.current, {}, {reload: true});
+    });
     if (window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);

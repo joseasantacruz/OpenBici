@@ -56,22 +56,71 @@ angular.module('starter.controllers', [])
 	//console.log("Voy a dibujar mapa");
 	dibujarElMapa($window.innerWidth, $window.innerHeight);
 })
-.controller('ComunidadesCtrl', function($scope,ComunidadesService, Initializer) {
+.controller('ComunidadesCtrl', function($scope,ComunidadesService, Initializer,$timeout) {
+	//$scope.marcador=[];
+	var icono  = L.icon({
+		iconUrl: 'http://icons.iconarchive.com/icons/sonya/swarm/64/Bike-icon.png',
+		  
+		popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+	});
+	var map = L.map('map_div') ;
+	$scope.points=[];
+	$scope.marcadores = function() {
+		
+		$scope.addresses = ComunidadesService.getAddress();
+		//console.log($scope.addresses);
+		/*
+		
+			 $.get(location.protocol + '//nominatim.openstreetmap.org/search?format=json&q='+'Asunción,Asunción, Paraguay', function(data){
+				$scope.dat=(data[0] );
+				
+				console.log('asu');
+				console.log($scope.dat.lat);
+				console.log($scope.dat.lon);
+				console.log('asu2');
+				//$scope.marcador.push([$scope.addresses[0][0],$scope.addresses[0][1],$scope.dat.lat,$scope.dat.lon]);
+				//console.log($scope.marcador );
+			}); 		
+			
+			$.get(location.protocol + '//nominatim.openstreetmap.org/search?format=json&q='+'Hohenau,Itapúa, Paraguay', function(data){
+				$scope.dat=(data[0] );
+				console.log('capi');
+				console.log($scope.dat.lat);
+				console.log($scope.dat.lon);
+				console.log('capi2');
+				//$scope.marcador.push([$scope.addresses[0][0],$scope.addresses[0][1],$scope.dat.lat,$scope.dat.lon]);
+				//console.log($scope.marcador );
+			}); */	
+		/*$.get(location.protocol + '//nominatim.openstreetmap.org/search?format=json&q='+$scope.addresses[0][0], function(data){
+			$scope.dat=(data[0] );
+		});
+		$timeout(function(){
+			$scope.marcador.push([$scope.addresses[0][0],$scope.addresses[0][1],$scope.dat.lat,$scope.dat.lon]);console.log($scope.marcador );
+		},1000)*/
+		for(var i=0;i<$scope.addresses.length;i++) {
+				//console.log( i );
+				var point =L.marker([$scope.addresses[i][2],$scope.addresses[i][3]], {icon: icono}).addTo(map).bindPopup($scope.addresses[i][1]).openPopup()  ;
+				$scope.points.push(point);
+			}
+	};
+
+	
 		if (window.cordova) {
 			cordova.plugins.diagnostic.isLocationEnabled(
 			function(e) {
 				if (e){
-				  successFunctionCall();
+				  $scope.DibujarMapa();
 				}   
 				else {
 				  alert("La ubicación esta deshabilitada");
 				  cordova.plugins.diagnostic.switchToLocationSettings();
 				  $scope.marca=1;
 				  while ($scope.marca=1){  
-					ordova.plugins.diagnostic.isLocationEnabled(
+					cordova.plugins.diagnostic.isLocationEnabled(
 						function(e) {
 							if (e){
 							  $scope.marca=0;
+							  $scope.DibujarMapa();
 							}   
 							else {
 							  $scope.marca=1;
@@ -89,14 +138,11 @@ angular.module('starter.controllers', [])
 			}
             );
         };
-		//$scope.successFunctionCall = function(){
 		
-			var map = L.map('map_div') ;
-			var icono  = L.icon({
-				iconUrl: 'http://icons.iconarchive.com/icons/sonya/swarm/64/Bike-icon.png',
-				  
-				popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-			});
+		//$scope.successFunctionCall = function(){
+		$scope.DibujarMapa = function() {
+			
+			
 			
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -107,10 +153,26 @@ angular.module('starter.controllers', [])
 				L.marker(e.latlng).addTo(map)
 			};
 			map.on('locationfound', onLocationFound); 
-
-			 a1=   L.marker([-25.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:1  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">')  ;
+			$scope.marcadores(); 
+			map.on('click', onMapClick);
+			function onMapClick(e) {
+				for (i=0;i<$scope.points.length;i++) {
+				  map.removeLayer($scope.points[i]);
+				  map.addLayer($scope.points[i]);
+				}
+				$scope.points=[];				
+				//$scope.marcadores(); 
+			}
+			function onLocationError(e) {
+				alert(e.message);
+			}
+			map.on('locationerror', onLocationError);
+				
+		};
+		$scope.DibujarMapa();
+			 /*a1=   L.marker([-25.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:1  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">')  ;
 			 a2=   L.marker([-26.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:2  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">');
-			 
+			 */
 			/*var a1= new L.marker([-25.308,-57.6], {icon: icono});
 			var	a2= new L.marker([-26.308,-57.6], {icon: icono});
 				map.addLayer(a1 );
@@ -118,18 +180,15 @@ angular.module('starter.controllers', [])
 				a1.bindPopup('<b>Ciudad o Municipio</b>:1  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">').openPopup();
 				a2.bindPopup('<b>Ciudad o Municipio</b>:2  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">').openPopup();
 			*/
-			map.on('click', onMapClick);
+			/*map.on('click', onMapClick);
 			function onMapClick(e) { 
 				map.removeLayer(a1);
 				map.removeLayer(a2);
 				
 				a1=   L.marker([-25.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:1  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">')  ;
 			 a2=   L.marker([-26.308,-57.6], {icon: icono}).addTo(map).bindPopup('<b>Ciudad o Municipio</b>:2  </br> <b>Departamento o Gobernacion</b>: Asunción</br> <b>Nombre del Grupo o Comunidad</b>: Paraguay en Bici te ves mejor</br> <b>Cantidad de Ciclistas</b> (Likes, Members, Followers):14965 ciclistas) <img src="https://scontent-gru2-1.xx.fbcdn.net/hphotos-xfa1/v/t1.0-9/12191068_730964630342544_3014975479325734034_n.jpg?oh=ce527eaea84ec620abdce91335727408&oe=573A5C15" width="300" height="300">');
-			};
-			function onLocationError(e) {
-				alert(e.message);
-			}
-			map.on('locationerror', onLocationError);
+			};*/
+			
 			
 			 /*
 			 google.charts.load('current', {
