@@ -13,7 +13,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 	
 	$ionicPlatform.on("resume", function() {
       console.log("resume");
-	  alert("resume");
+	 // alert("resume");
 	  //$state.reload();
 	  //$state.forceReload();
 	  // $state.transitionTo($state.current, $stateParams, { reload: true, inherit: false, notify: true });
